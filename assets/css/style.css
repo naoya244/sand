@@ -1,0 +1,457 @@
+@charset "UTF-8";
+/* =========================================================
+   sand — renewal / scroll-driven
+   テーマカラー: aqua #8FC6CD（指定色。公式サイトの差し色 #80C6CC とほぼ同一）
+   暗い面はネイビーではなく深いティールで統一する
+   ========================================================= */
+
+:root{
+  --aqua:#8FC6CD;  --aqua-l:#BCDFE3; --aqua-d:#3F868F; --aqua-dd:#2C6B73;
+  --deep:#1D3F46;  --deep-2:#142E34; --deep-3:#0D2025;
+  /* 地もアクア寄りに振る。無彩色の白だとテーマ色が浮いて見える */
+  --paper:#F1F7F7; --paper-2:#DDEDEF; --paper-3:#C9E3E6;
+  --sand:#EFE9DC;                       /* 温かい二次色。効かせどころだけ */
+  --ink:#3C4A4C;   --ink-2:#7C8C8E;
+  --hair:rgba(29,63,70,.16); --hair-l:rgba(247,249,249,.20);
+  --f-dp:"Cormorant Garamond","Zen Old Mincho",serif;
+  --f-mc:"Zen Old Mincho",serif;
+  --f-ja:"Zen Kaku Gothic New",sans-serif;
+  --f-ui:"Jost",sans-serif;
+  --pad:clamp(20px,5vw,84px);
+  --max:1440px;
+  --e:cubic-bezier(.22,1,.36,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--f-ja);font-weight:300;font-size:15px;line-height:2.05;letter-spacing:.045em;
+  /* overflow-x:hidden は body をスクロールコンテナ化させ ScrollTrigger が壊れる。clip は箱にならない */
+  overflow-x:clip;-webkit-font-smoothing:antialiased;
+}
+body.lock{overflow:hidden;}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;}
+h1,h2,h3,p,figure,ul,ol,em{margin:0;padding:0;font-style:normal;}
+ul,ol{list-style:none;}
+::selection{background:var(--deep);color:var(--aqua-l);}
+.wrap{width:100%;max-width:var(--max);margin-inline:auto;padding-inline:var(--pad);position:relative;z-index:3;}
+
+.skip{position:absolute;left:-9999px;}
+.skip:focus{left:12px;top:12px;z-index:500;background:var(--deep);color:#fff;padding:10px 16px;}
+:focus-visible{outline:2px solid var(--aqua-d);outline-offset:3px;}
+
+/* =========================================================
+   Loader
+   ========================================================= */
+/* 第一印象でテーマ色を決めるので、ローダーはアクタのベタ塗り */
+.load{
+  position:fixed;inset:0;z-index:300;background:var(--aqua);
+  display:grid;place-content:center;justify-items:center;gap:16px;
+  transition:opacity .8s var(--e),visibility .8s;
+}
+.load.done{opacity:0;visibility:hidden;}
+.load__mark{font-family:var(--f-dp);font-size:clamp(52px,10vw,104px);color:var(--deep-3);line-height:1;}
+.load__mark span{display:inline-block;opacity:0;transform:translateY(.45em);animation:lm .8s var(--e) forwards;}
+.load__mark span:nth-child(2){animation-delay:.09s}
+.load__mark span:nth-child(3){animation-delay:.18s}
+.load__mark span:nth-child(4){animation-delay:.27s}
+@keyframes lm{to{opacity:1;transform:none}}
+.load__sub{font-family:var(--f-ui);font-size:10px;letter-spacing:.34em;color:rgba(13,32,37,.55);opacity:0;animation:lm .8s var(--e) .4s forwards;}
+.load__bar{display:block;width:min(180px,40vw);height:1px;background:rgba(13,32,37,.22);overflow:hidden;}
+.load__bar i{display:block;height:100%;background:var(--deep-3);transform:scaleX(0);transform-origin:left;animation:lb 1.2s var(--e) .2s forwards;}
+@keyframes lb{to{transform:scaleX(1)}}
+
+/* =========================================================
+   Header / Drawer
+   ========================================================= */
+.hd{
+  position:fixed;top:0;left:0;right:0;z-index:130;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding:24px var(--pad);transition:padding .55s var(--e);
+}
+.hd::before{
+  content:"";position:absolute;inset:0;z-index:-1;background:var(--paper);
+  opacity:0;transform:translateY(-100%);transition:opacity .55s var(--e),transform .55s var(--e);
+  box-shadow:0 1px 0 var(--hair);
+}
+.hd.solid{padding-block:13px;}
+.hd.solid::before{opacity:.97;transform:none;backdrop-filter:blur(12px);}
+.hd__logo span{font-family:var(--f-dp);font-size:30px;line-height:1;color:var(--deep);transition:color .5s var(--e);}
+.hd__nav{display:flex;gap:clamp(16px,2.2vw,34px);}
+.hd__nav a{position:relative;padding-block:5px;font-family:var(--f-ui);font-size:11px;letter-spacing:.2em;color:var(--deep);transition:color .5s var(--e);}
+.hd__nav a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--aqua-d);transform:scaleX(0);transform-origin:right;transition:transform .55s var(--e);}
+.hd__nav a:hover::after,.hd__nav a.on::after{transform:scaleX(1);transform-origin:left;}
+.hd__act{display:flex;align-items:center;gap:14px;}
+
+.hd.inv .hd__logo span,.hd.inv .hd__nav a{color:var(--paper);}
+.hd.inv .burger i{background:var(--paper);}
+.hd.inv.solid .hd__logo span,.hd.inv.solid .hd__nav a{color:var(--deep);}
+.hd.inv.solid .burger i{background:var(--deep);}
+body.lock .hd::before{opacity:0;}
+body.lock .hd__logo span,body.lock .hd__nav a{color:var(--paper);}
+body.lock .burger i{background:var(--paper);}
+
+.btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  min-height:54px;padding:0 32px;overflow:hidden;isolation:isolate;
+  font-family:var(--f-ui);font-size:12px;letter-spacing:.16em;
+  color:var(--deep);border:1px solid var(--deep);transition:color .5s var(--e);
+}
+.btn span{position:relative;z-index:2;}
+.btn::before{content:"";position:absolute;inset:0;z-index:1;background:var(--deep);transform:scaleY(0);transform-origin:bottom;transition:transform .55s var(--e);}
+.btn:hover{color:var(--paper);}
+.btn:hover::before{transform:scaleY(1);}
+/* 主要CTAはテーマ色のベタ。#8FC6CD に濃ティール文字でコントラストも足りる */
+.btn--sm{min-height:40px;padding:0 20px;font-size:10.5px;background:var(--aqua);color:var(--deep-3);border-color:var(--aqua);}
+.btn--sm::before{background:var(--deep-3);}
+.btn--sm:hover{color:var(--aqua);}
+.btn--solid{background:var(--aqua);color:var(--deep-3);border-color:var(--aqua);}
+.btn--solid::before{background:var(--deep-3);}
+.btn--solid:hover{color:var(--aqua);}
+.btn--sand{background:var(--aqua);border-color:var(--aqua);color:var(--deep-2);}
+.btn--sand::before{background:var(--aqua-l);}
+.btn--sand:hover{color:var(--deep-2);}
+.btn--gh{color:var(--paper);border-color:rgba(247,249,249,.55);}
+.btn--gh::before{background:var(--paper);}
+.btn--gh:hover{color:var(--deep);}
+
+.burger{display:none;width:44px;height:44px;position:relative;z-index:140;}
+.burger i{position:absolute;left:11px;width:22px;height:1px;background:var(--deep);transition:transform .55s var(--e),opacity .3s,background .4s;}
+.burger i:nth-child(1){top:17px}.burger i:nth-child(2){top:22px}.burger i:nth-child(3){top:27px}
+.burger.on i:nth-child(1){transform:translateY(5px) rotate(20deg)}
+.burger.on i:nth-child(2){opacity:0}
+.burger.on i:nth-child(3){transform:translateY(-5px) rotate(-20deg)}
+
+.drawer{position:fixed;inset:0;z-index:110;background:var(--deep-2);overflow-y:auto;clip-path:inset(0 0 100% 0);transition:clip-path .85s var(--e);}
+.drawer.open{clip-path:inset(0 0 0 0);}
+.drawer__in{min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:44px;padding:118px var(--pad) 56px;}
+.drawer__nav{display:grid;max-width:680px;}
+.drawer__nav a{
+  display:grid;grid-template-columns:46px 1fr;align-items:baseline;gap:0 16px;padding:14px 0;
+  border-bottom:1px solid var(--hair-l);color:var(--paper);opacity:0;transform:translateY(20px);
+  transition:opacity .7s var(--e),transform .7s var(--e),padding-left .45s var(--e),color .45s;
+}
+.drawer.open .drawer__nav a{opacity:1;transform:none;transition-delay:calc(.3s + var(--i,0)*.05s);}
+.drawer__nav a:hover{padding-left:14px;color:var(--aqua);}
+.drawer__nav i{grid-row:span 2;font-family:var(--f-dp);font-size:12px;opacity:.45;}
+.drawer__nav b{font-family:var(--f-dp);font-weight:300;font-size:clamp(28px,6vw,50px);line-height:1.05;}
+.drawer__nav em{grid-column:2;font-size:10.5px;letter-spacing:.24em;opacity:.55;}
+.drawer__ft{display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:end;color:rgba(247,249,249,.55);font-size:11px;letter-spacing:.12em;}
+.drawer__sns{display:flex;gap:22px;font-family:var(--f-ui);letter-spacing:.18em;}
+.drawer__sns a{color:var(--paper);}
+
+/* =========================================================
+   BEAT 1 — Hero
+   写真は「切り替わる」のではなく、寄り続けながら
+   次のカットが下から拭き上がって重なる（連続スクラブ）
+   ========================================================= */
+.hero{height:340vh;position:relative;}
+.hero__stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;}
+.hero__shots{position:absolute;inset:0;z-index:0;}
+.shot{position:absolute;inset:0;will-change:clip-path;}
+.shot:not(:first-child){clip-path:inset(100% 0 0 0);}
+/* 縦位置の人物写真。顔と髪が切れないよう上寄りでトリミングする */
+.shot img{width:100%;height:100%;object-fit:cover;object-position:50% 16%;will-change:transform;}
+.hero__veil{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(13,32,37,.50) 0%,rgba(13,32,37,.18) 34%,rgba(13,32,37,.30) 62%,rgba(13,32,37,.74) 100%);
+}
+.hero__body{
+  position:absolute;left:var(--pad);right:var(--pad);bottom:clamp(140px,22vh,240px);z-index:3;
+  max-width:min(940px,72%);color:var(--paper);
+}
+.hero__kick{display:flex;align-items:center;gap:12px;margin-bottom:24px;font-family:var(--f-ui);font-size:10.5px;letter-spacing:.26em;opacity:.9;}
+.hero__kick i{width:44px;height:1px;background:var(--aqua);}
+.hero__ttl{font-family:var(--f-mc);font-weight:500;font-size:clamp(34px,6vw,86px);line-height:1.22;letter-spacing:.02em;text-shadow:0 2px 30px rgba(8,20,24,.4);}
+.hero__ttl .ln{display:block;overflow:hidden;}
+.hero__ttl .ln > span{display:inline-block;white-space:nowrap;}
+.hero__ttl .ch{display:inline-block;opacity:0;transform:translateY(1.05em) rotate(4deg);}
+.hero__ttl.go .ch{opacity:1;transform:none;transition:opacity .9s var(--e) var(--cd),transform 1.05s var(--e) var(--cd);}
+.hero__lead{margin-top:22px;font-size:clamp(12.5px,1.2vw,15px);line-height:2.2;opacity:.92;max-width:46em;}
+.hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;}
+.hero__foot{
+  position:absolute;left:var(--pad);right:var(--pad);bottom:34px;z-index:3;color:var(--paper);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:26px;
+  padding-top:18px;border-top:1px solid var(--hair-l);
+}
+.hero__scroll{display:flex;align-items:center;gap:12px;font-family:var(--f-ui);font-size:9.5px;letter-spacing:.32em;opacity:.85;}
+.hero__scroll i{position:relative;display:block;width:60px;height:1px;background:currentColor;overflow:hidden;}
+.hero__scroll i::after{content:"";position:absolute;inset:0;background:var(--aqua);transform:translateX(-100%);animation:sc 2.6s var(--e) infinite;}
+@keyframes sc{50%{transform:translateX(0)}100%{transform:translateX(100%)}}
+.hero__num{display:flex;gap:clamp(22px,5vw,66px);}
+.hero__num div{text-align:right;}
+.hero__num b{display:block;font-family:var(--f-dp);font-weight:300;font-size:clamp(30px,4vw,54px);line-height:1;}
+.hero__num em{font-family:var(--f-ui);font-size:9px;letter-spacing:.24em;opacity:.7;}
+
+/* =========================================================
+   Marquee
+   ========================================================= */
+/* 全幅の帯はテーマ色を一番はっきり見せられる場所 */
+.mq{position:relative;z-index:4;background:var(--aqua);color:var(--deep-3);overflow:hidden;padding:20px 0;}
+.mq__t{display:flex;align-items:center;gap:32px;width:max-content;animation:mq 36s linear infinite;}
+.mq span{font-family:var(--f-mc);font-size:clamp(17px,2.2vw,27px);white-space:nowrap;letter-spacing:.08em;}
+.mq i{width:5px;height:5px;border-radius:50%;background:var(--deep-3);opacity:.5;flex:none;}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* =========================================================
+   共通
+   ========================================================= */
+.sec{position:relative;padding-block:clamp(84px,12vw,168px);}
+.hdr{position:relative;margin-bottom:clamp(38px,5vw,64px);}
+.hdr__no{font-family:var(--f-dp);font-size:12px;letter-spacing:.24em;color:var(--aqua-d);display:block;margin-bottom:4px;}
+.hdr__en{font-family:var(--f-dp);font-weight:300;font-size:clamp(52px,9vw,132px);line-height:.88;color:var(--deep);margin-left:-.05em;}
+.hdr__ja{margin-top:12px;font-size:12.5px;letter-spacing:.18em;color:var(--ink-2);}
+.hdr--c{text-align:center;}
+.hdr--c .hdr__en{margin-left:0;}
+.hdr--lt .hdr__en{color:var(--paper);}
+.hdr--lt .hdr__ja{color:rgba(247,249,249,.62);}
+.hdr--lt .hdr__no{color:var(--aqua);}
+
+.rise{opacity:0;transform:translateY(28px);transition:opacity 1s var(--e),transform 1s var(--e);transition-delay:var(--d,0s);}
+.rise.in{opacity:1;transform:none;}
+
+.prog{position:fixed;left:0;top:0;height:2px;width:100%;z-index:200;pointer-events:none;}
+.prog i{display:block;height:100%;width:0;background:var(--aqua);}
+
+.fab{
+  position:fixed;right:18px;bottom:18px;z-index:90;display:none;align-items:center;justify-content:center;
+  height:52px;padding:0 26px;background:var(--aqua);color:var(--deep-3);
+  font-family:var(--f-ui);font-size:11px;letter-spacing:.2em;box-shadow:0 14px 34px rgba(13,32,37,.32);
+  opacity:0;transform:translateY(16px);transition:opacity .55s var(--e),transform .55s var(--e);
+}
+.fab.in{opacity:1;transform:none;}
+
+/* =========================================================
+   BEAT 2 — Concept
+   ========================================================= */
+.cpt{background:var(--paper);}
+.cpt__grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);gap:clamp(36px,6vw,96px);align-items:start;}
+.cpt__vis{position:relative;}
+.fr{position:relative;overflow:hidden;background:var(--paper-2);}
+.fr img{width:100%;height:100%;object-fit:cover;}
+.fr--a{aspect-ratio:3/4;}
+.fr--b{position:absolute;right:-14%;bottom:-16%;width:58%;aspect-ratio:4/3;box-shadow:0 30px 70px rgba(13,32,37,.22);}
+.cpt__vcap{position:absolute;left:-38px;top:0;writing-mode:vertical-rl;font-family:var(--f-mc);font-size:13px;letter-spacing:.3em;color:var(--ink-2);opacity:.75;}
+@media (max-width:1200px){.cpt__vcap{display:none;}}
+.cpt__q{font-family:var(--f-mc);font-weight:500;font-size:clamp(26px,3.4vw,46px);line-height:1.62;letter-spacing:.03em;color:var(--deep);margin-bottom:30px;}
+.cpt__p p{margin-bottom:1.7em;max-width:60ch;}
+.cpt__pts{margin-top:36px;border-top:1px solid var(--hair);}
+.cpt__pts li{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 22px;padding:17px 0;border-bottom:1px solid var(--hair);}
+.cpt__pts b{min-width:11em;font-weight:400;font-size:14px;letter-spacing:.08em;color:var(--deep);}
+.cpt__pts span{font-size:12px;letter-spacing:.1em;color:var(--ink-2);}
+
+/* =========================================================
+   Apple 式リビール — 小窓 → 全画面
+   clip-path を CSS変数 --c (1→0) で連続的に開く
+   ========================================================= */
+/* 小窓のまわりが大きく見えるので、ここを濃いアクアにするとテーマが決まる */
+.rvl{height:300vh;position:relative;background:var(--paper-3);}
+.rvl__stage{position:sticky;top:0;height:100svh;overflow:hidden;display:grid;place-items:center;}
+.rvl__ph{
+  --c:1;
+  position:absolute;inset:0;overflow:hidden;
+  clip-path:inset(calc(var(--c) * 24%) calc(var(--c) * 27%) calc(var(--c) * 24%) calc(var(--c) * 27%));
+  will-change:clip-path;
+}
+.rvl__ph img{width:100%;height:100%;object-fit:cover;will-change:transform;}
+.rvl__veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,32,37,.10),rgba(13,32,37,.62));opacity:0;pointer-events:none;}
+.rvl__cap{position:relative;z-index:3;text-align:center;color:var(--paper);padding-inline:var(--pad);opacity:0;}
+.rvl__t{font-family:var(--f-mc);font-weight:500;font-size:clamp(26px,4.4vw,62px);line-height:1.6;letter-spacing:.04em;text-shadow:0 2px 30px rgba(8,20,24,.45);}
+.rvl__s{margin-top:18px;font-family:var(--f-ui);font-size:11px;letter-spacing:.28em;color:var(--aqua);}
+
+/* =========================================================
+   BEAT 3 — Pinned scrollytelling
+   ========================================================= */
+.pin{height:440vh;position:relative;background:var(--deep-2);}
+.pin__stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;}
+.pin__media{position:absolute;inset:0;z-index:0;}
+.pshot{position:absolute;inset:0;will-change:opacity;}
+.pshot img{width:100%;height:100%;object-fit:cover;will-change:transform;}
+.pin__veil{position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,rgba(13,32,37,.88) 0%,rgba(13,32,37,.62) 44%,rgba(13,32,37,.12) 100%);}
+.pin__ui{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;padding:120px var(--pad) 90px;color:var(--paper);}
+.pin__hd{margin-bottom:clamp(24px,4vh,52px);}
+.pin__hd .hdr__en{color:var(--paper);}
+.pin__hd .hdr__no{color:var(--aqua);}
+.pin__chapters{position:relative;max-width:min(560px,60%);min-height:16em;}
+.chap{position:absolute;inset:0;opacity:0;will-change:opacity,transform;}
+.chap:first-child{opacity:1;}   /* JSが動かなくても最低1章は読める */
+.chap__n{font-family:var(--f-dp);font-size:13px;letter-spacing:.22em;color:var(--aqua);}
+.chap h3{margin:16px 0 4px;font-family:var(--f-mc);font-weight:500;font-size:clamp(22px,2.6vw,36px);line-height:1.5;letter-spacing:.04em;}
+.chap em{font-family:var(--f-dp);font-style:italic;font-size:14px;color:rgba(247,249,249,.55);}
+.chap p{margin-top:20px;font-size:13.5px;line-height:2.15;color:rgba(247,249,249,.8);}
+.pin__dots{position:absolute;right:var(--pad);top:50%;translate:0 -50%;display:grid;gap:14px;}
+.pin__dots li{width:7px;height:7px;border-radius:50%;border:1px solid rgba(247,249,249,.5);transition:background .5s var(--e),transform .5s var(--e),border-color .5s var(--e);}
+.pin__dots li.is-on{background:var(--aqua);border-color:var(--aqua);transform:scale(1.5);}
+@media (max-width:820px){
+  .pin{height:420vh;}
+  .pin__chapters{max-width:100%;}
+  .pin__veil{background:linear-gradient(180deg,rgba(13,32,37,.55) 0%,rgba(13,32,37,.88) 55%);}
+  .pin__dots{right:14px;}
+  .rvl{height:260vh;}
+}
+
+/* Award */
+.awd{background:var(--aqua);color:var(--deep-3);padding-block:clamp(56px,8vw,96px);text-align:center;}
+.awd__l{font-family:var(--f-ui);font-size:10.5px;letter-spacing:.32em;color:rgba(13,32,37,.62);}
+.awd__y{display:flex;justify-content:center;align-items:center;gap:18px;margin:14px 0 10px;}
+.awd__y b{font-family:var(--f-dp);font-weight:300;font-size:clamp(34px,6vw,76px);line-height:1;}
+.awd__y i{width:5px;height:5px;border-radius:50%;background:var(--deep-3);opacity:.5;}
+.awd__s{font-size:12px;letter-spacing:.16em;color:rgba(13,32,37,.62);}
+
+/* =========================================================
+   BEAT 4a — 横スクロール MEDIA
+   ========================================================= */
+.hz{position:relative;background:var(--paper-2);}
+.hz__stage{position:relative;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:28px;padding-block:90px;}
+.hz__hd{padding-inline:var(--pad);}
+.hz__hd .hdr__en{font-family:var(--f-dp);font-weight:300;font-size:clamp(46px,7vw,104px);line-height:.9;color:var(--deep);}
+.hz__hd .hdr__no{font-family:var(--f-dp);font-size:12px;letter-spacing:.24em;color:var(--aqua-d);}
+.hz__hd .hdr__ja{margin-top:8px;font-size:12px;letter-spacing:.18em;color:var(--ink-2);}
+.hz__track{display:flex;gap:clamp(16px,2vw,30px);padding-inline:var(--pad);width:max-content;will-change:transform;}
+.hz__c{position:relative;flex:none;width:clamp(200px,22vw,300px);aspect-ratio:3/4;overflow:hidden;background:var(--paper);}
+.hz__c img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--e);}
+.hz__c:hover img{transform:scale(1.05);}
+.hz__c figcaption{position:absolute;left:0;bottom:0;padding:10px 14px;font-family:var(--f-ui);font-size:9px;letter-spacing:.2em;color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6);}
+.hz__hint{padding-inline:var(--pad);font-family:var(--f-ui);font-size:10px;letter-spacing:.3em;color:var(--ink-2);}
+@media (max-width:820px){
+  .hz__stage{height:auto;padding-block:clamp(70px,11vw,110px);}
+  .hz__track{width:auto;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:12px;}
+  .hz__c{scroll-snap-align:start;width:64vw;}
+}
+
+/* =========================================================
+   BEAT 4b — Salon
+   ========================================================= */
+.sln{background:var(--paper);}
+.flt{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:clamp(30px,4vw,48px);}
+.flt__b{display:inline-flex;align-items:center;gap:9px;padding:10px 19px;border:1px solid var(--hair);font-family:var(--f-ui);font-size:11.5px;letter-spacing:.12em;color:var(--deep);transition:all .45s var(--e);}
+.flt__b i{font-family:var(--f-dp);font-size:10px;opacity:.55;}
+.flt__b:hover{border-color:var(--aqua-d);}
+.flt__b.is-on{background:var(--aqua);border-color:var(--aqua);color:var(--deep-3);}
+.sln__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:clamp(20px,2.4vw,38px);}
+.slnc{display:flex;flex-direction:column;}
+.slnc.hide{display:none;}
+.slnc__ph{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--paper-2);margin-bottom:16px;}
+.slnc__ph img{width:100%;height:100%;object-fit:cover;transition:transform 1.3s var(--e);}
+.slnc:hover .slnc__ph img{transform:scale(1.06);}
+.slnc__a{position:absolute;left:12px;top:12px;padding:4px 11px;background:var(--aqua);font-family:var(--f-ui);font-size:9.5px;letter-spacing:.18em;color:var(--deep-2);}
+.slnc__n{font-family:var(--f-dp);font-weight:400;font-size:25px;line-height:1.15;color:var(--deep);}
+.slnc__d{margin-top:8px;font-size:11.5px;line-height:1.9;color:var(--ink-2);}
+.slnc__z{display:block;font-family:var(--f-dp);font-size:11px;letter-spacing:.1em;}
+.slnc__l{margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);display:flex;justify-content:space-between;align-items:center;font-family:var(--f-ui);font-size:10.5px;letter-spacing:.18em;color:var(--deep);}
+.slnc__l i{transition:transform .5s var(--e);}
+.slnc:hover .slnc__l i{transform:translateX(7px);}
+
+/* =========================================================
+   Menu
+   ========================================================= */
+.mn{background:var(--deep);color:var(--paper);overflow:hidden;isolation:isolate;}
+.mn__bg{position:absolute;inset:-12% 0;z-index:0;opacity:.20;}
+.mn__bg img{width:100%;height:100%;object-fit:cover;will-change:transform;}
+.mn__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,3.4vw,54px) clamp(36px,7vw,120px);}
+@media (max-width:760px){.mn__grid{grid-template-columns:1fr;}}
+.mn__t{display:flex;align-items:baseline;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--hair-l);}
+.mn__t i{font-family:var(--f-dp);font-style:normal;font-weight:300;font-size:clamp(26px,3vw,38px);line-height:1;color:var(--paper);}
+.mn__t span{font-size:11px;letter-spacing:.2em;color:rgba(247,249,249,.6);}
+.mn__g li{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:14px 0;border-bottom:1px solid var(--hair-l);font-size:12.5px;color:rgba(247,249,249,.88);}
+.mn__g li b{font-family:var(--f-dp);font-weight:400;font-size:18px;color:var(--aqua);white-space:nowrap;}
+.mn__note{margin-top:36px;font-size:11px;line-height:2.1;color:rgba(247,249,249,.55);}
+
+/* =========================================================
+   Recruit
+   ========================================================= */
+.rec{position:relative;overflow:hidden;isolation:isolate;color:var(--paper);text-align:center;padding-block:clamp(104px,15vw,196px);background:var(--deep-3);}
+.rec__bg{position:absolute;inset:-14% 0;z-index:0;opacity:.42;}
+.rec__bg img{width:100%;height:100%;object-fit:cover;will-change:transform;}
+.rec::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(13,32,37,.6),rgba(13,32,37,.86));}
+.rec__in{max-width:840px;z-index:3;}
+.rec .hdr__no{color:var(--aqua);font-family:var(--f-dp);font-size:12px;letter-spacing:.24em;display:block;}
+.rec__en{font-family:var(--f-dp);font-weight:300;font-size:clamp(50px,9vw,140px);line-height:.9;margin:12px 0 24px;}
+.rec__cp{font-family:var(--f-mc);font-weight:500;font-size:clamp(19px,2.6vw,33px);line-height:1.85;letter-spacing:.04em;}
+.rec__tx{margin:26px auto 0;max-width:640px;font-size:13.5px;line-height:2.3;color:rgba(247,249,249,.76);}
+.rec__cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:40px;}
+
+/* =========================================================
+   Contact / Footer
+   ========================================================= */
+.cnt{background:var(--paper-2);}
+.cnt__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:clamp(28px,4vw,58px);}
+.cnt__c{display:flex;flex-direction:column;align-items:flex-start;gap:13px;padding-top:24px;border-top:1px solid var(--deep);}
+.cnt__c h3{font-family:var(--f-dp);font-weight:300;font-size:32px;line-height:1;color:var(--deep);}
+.cnt__c p{font-size:12.5px;line-height:2.05;margin-bottom:6px;}
+.cnt__c .btn{width:100%;max-width:340px;}
+.sns{width:100%;max-width:340px;border-top:1px solid var(--hair);}
+.sns a{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--hair);font-family:var(--f-ui);font-size:11.5px;letter-spacing:.16em;color:var(--deep);transition:padding-left .5s var(--e);}
+.sns a:hover{padding-left:12px;}
+.sns i{color:var(--aqua-d);transition:transform .5s var(--e);}
+.sns a:hover i{transform:translateX(7px);}
+
+.ft{background:var(--deep-3);color:var(--paper);padding:clamp(58px,7vw,92px) 0 26px;}
+.ft__in{display:flex;flex-wrap:wrap;gap:36px 60px;justify-content:space-between;align-items:flex-start;}
+.ft__logo{font-family:var(--f-dp);font-size:40px;line-height:1;}
+.ft__tag{margin-top:16px;font-size:11px;line-height:2;letter-spacing:.1em;color:rgba(247,249,249,.52);}
+.ft__nav{display:grid;grid-template-columns:repeat(2,minmax(118px,auto));gap:11px 52px;}
+.ft__nav a{font-family:var(--f-ui);font-size:10.5px;letter-spacing:.2em;color:rgba(247,249,249,.75);transition:color .4s;}
+.ft__nav a:hover{color:var(--aqua);}
+.ft__cr{margin-top:clamp(46px,6vw,76px);padding-top:20px;border-top:1px solid var(--hair-l);text-align:center;font-family:var(--f-dp);font-size:11px;letter-spacing:.16em;color:rgba(247,249,249,.42);}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+@media (max-width:1080px){
+  .hd__nav{display:none;}
+  .burger{display:block;}
+  .cpt__grid{grid-template-columns:1fr;}
+  .fr--b{width:46%;right:0;bottom:-9%;}
+}
+@media (max-width:720px){
+  body{font-size:14px;}
+  .hd__act .btn--sm{display:none;}
+  .fab{display:inline-flex;}
+  .hero{height:280vh;}
+  .hero__body{max-width:100%;bottom:clamp(150px,26vh,230px);}
+  .hero__foot{flex-direction:column;align-items:flex-start;gap:18px;}
+  .hero__num{width:100%;justify-content:space-between;gap:10px;}
+  .hero__num div{text-align:left;}
+  .cpt__pts b{min-width:100%;}
+  .ft__in{flex-direction:column;}
+  .ft__nav{grid-template-columns:repeat(2,1fr);width:100%;}
+  .drawer__in{justify-content:flex-start;gap:32px;padding-top:104px;}
+  .drawer__nav a{padding:11px 0;}
+  .drawer__nav b{font-size:clamp(25px,7.4vw,34px);}
+  .drawer__ft{flex-direction:column;align-items:flex-start;}
+  .rvl__ph{clip-path:inset(calc(var(--c) * 16%) calc(var(--c) * 10%) calc(var(--c) * 16%) calc(var(--c) * 10%));}
+}
+@media (max-width:420px){
+  .sln__grid{grid-template-columns:1fr;}
+  .flt__b{padding:8px 14px;font-size:10.5px;}
+}
+
+/* =========================================================
+   Reduced motion — 動きを止めても内容は全部読める
+   ========================================================= */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
+  .rise{opacity:1;transform:none;}
+  .hero__ttl .ch{opacity:1;transform:none;}
+  .hero{height:auto;}
+  .hero__stage{position:relative;height:auto;min-height:100svh;}
+  .shot:not(:first-child){display:none;}
+  .rvl{height:auto;}
+  .rvl__stage{position:relative;height:70svh;}
+  .rvl__ph{--c:0;}
+  .rvl__veil{opacity:1;}
+  .rvl__cap{opacity:1;}
+  .pin{height:auto;}
+  .pin__stage{position:relative;height:auto;}
+  .pin__ui{position:relative;inset:auto;padding-block:100px;}
+  .pin__chapters{min-height:0;display:grid;gap:44px;}
+  .chap{position:relative;inset:auto;opacity:1;}
+  .pshot:not(:first-child){display:none;}
+  .pin__dots{display:none;}
+  .hz__stage{height:auto;}
+  .hz__track{width:auto;overflow-x:auto;}
+}
