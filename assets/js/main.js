@@ -31,7 +31,7 @@
   ];
 
   $('#salons').innerHTML = SALONS.map(s => `
-    <article class="slnc rise" data-area="${s.a}">
+    <article class="slnc" data-area="${s.a}">
       <div class="slnc__ph">
         <img src="assets/img/salon/${s.img}" alt="${s.n} の店内" loading="lazy">
         <span class="slnc__a">${s.j}</span>
@@ -167,6 +167,77 @@
            .fromTo(c, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: 'power2.out', duration: .36 }, i - .06);
     });
 
+    /* ---- マーキー : スクロール速度で加速し、逆スクロールで逆走する ---- */
+    document.body.classList.remove('no-js-mq');   // ここから先はJSが流す
+    const mqTween = gsap.to('.mq__t', { xPercent: -50, repeat: -1, duration: 24, ease: 'none' });
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        const v = self.getVelocity();
+        gsap.to(mqTween, {
+          timeScale: gsap.utils.clamp(-5, 5, 1 + v / 800),
+          duration: .45, overwrite: true
+        });
+      }
+    });
+
+    /* ---- 文字の中の写真を、スクロールでゆっくり流す ---- */
+    if ($('.msk__t')) {
+      gsap.fromTo('.msk__t',
+        { backgroundPosition: '50% 8%' },
+        { backgroundPosition: '50% 78%', ease: 'none',
+          scrollTrigger: { trigger: '.msk', start: 'top bottom', end: 'bottom top', scrub: .5 } });
+    }
+
+    /* ---- サロン : ばらけた状態から所定位置へ組み上がる ---- */
+    $$('.slnc').forEach((c, i) => {
+      const dx = ((i % 3) - 1) * 80;          // 見た目のばらつきは index から作る（毎回同じ動きになる）
+      const dy = 90 + (i % 4) * 34;
+      const rot = ((i % 5) - 2) * 3.5;
+      gsap.fromTo(c,
+        { x: dx, y: dy, rotate: rot, scale: .88, opacity: 0 },
+        { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, ease: 'power3.out', duration: 1.05,
+          scrollTrigger: { trigger: c, start: 'top 90%', once: true } });
+    });
+    /* ---- 保険 ----------------------------------------------
+       登場アニメは「再生されるまで中身が透明」になる作りなので、
+       何らかの理由で再生されなかった要素は強制的に元に戻す。
+       内容がアニメの裏に隠れたままになるのを防ぐため。              */
+    const unhide = () => {
+      $$('.slnc, .hdr__en > span').forEach(el => {
+        if (parseFloat(getComputedStyle(el).opacity) < .05) gsap.set(el, { clearProps: 'all' });
+      });
+    };
+    setTimeout(unhide, 5000);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) setTimeout(unhide, 1200);   // 背面タブから戻ったとき
+    });
+
+    /* ---- コンセプトの地の色をスクロールで深める ---- */
+    if ($('.cpt')) {
+      gsap.fromTo('.cpt', { backgroundColor: '#F1F7F7' }, {
+        backgroundColor: '#DDEDEF', ease: 'none',
+        scrollTrigger: { trigger: '.cpt', start: 'top center', end: 'bottom bottom', scrub: .6 }
+      });
+    }
+
+    /* ---- 見出しの欧文を1文字ずつ立ち上げる ---- */
+    $$('.hdr__en, .hz__hd .hdr__en').forEach(h => {
+      if (h.dataset.split) return;
+      h.dataset.split = '1';
+      const chars = [...h.textContent];
+      h.textContent = '';
+      chars.forEach(c => {
+        const s = document.createElement('span');
+        s.textContent = c;
+        s.style.display = 'inline-block';
+        h.appendChild(s);
+      });
+      gsap.from(h.children, {
+        yPercent: 110, opacity: 0, duration: .9, ease: 'power3.out', stagger: .035,
+        scrollTrigger: { trigger: h, start: 'top 88%', once: true }
+      });
+    });
+
     /* ---- BEAT 4 : MEDIA を横に流す（広い画面のみ） ---- */
     const track = $('#hzTrack');
     let hzST = null;
@@ -194,6 +265,35 @@
     };
     buildHz();
     addEventListener('resize', () => { clearTimeout(window.__rz); window.__rz = setTimeout(buildHz, 250); });
+  }
+
+  /* ---------- カスタムカーソル + ボタンの磁力 ---------- */
+  if (!reduced && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const cur = $('#cur');
+    let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
+    addEventListener('mousemove', (e) => {
+      x = e.clientX; y = e.clientY;
+      cur.classList.add('on');
+      cur.classList.toggle('hot', !!e.target.closest('a,button,.slnc,.hz__c'));
+    }, { passive: true });
+    addEventListener('mouseleave', () => cur.classList.remove('on'));
+    gsap.ticker.add(() => {
+      cx += (x - cx) * .18; cy += (y - cy) * .18;
+      cur.style.transform = `translate3d(${cx}px,${cy}px,0)`;
+    });
+
+    // ボタンがカーソルに少し引き寄せられる
+    $$('.btn').forEach(b => {
+      b.addEventListener('mousemove', (e) => {
+        const r = b.getBoundingClientRect();
+        gsap.to(b, {
+          x: (e.clientX - (r.left + r.width / 2)) * .28,
+          y: (e.clientY - (r.top + r.height / 2)) * .38,
+          duration: .5, ease: 'power3.out'
+        });
+      });
+      b.addEventListener('mouseleave', () => gsap.to(b, { x: 0, y: 0, duration: .7, ease: 'elastic.out(1,.4)' }));
+    });
   }
 
   /* ---------- 進捗バー・ヘッダー ---------- */
