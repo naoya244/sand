@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お問い合わせ ｜ sand</title>
+<meta name="description" content="美容室 sand へのご予約・お問い合わせ。取材・撮影・商品に関するご相談、企業の方からのお問い合わせも承ります。">
+<meta name="theme-color" content="#8FC6CD">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&family=Zen+Kaku+Gothic+New:wght@300;400;500&family=Zen+Old+Mincho:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">本文へスキップ</a>
+<div class="cur" id="cur" aria-hidden="true"><i class="cur__r"></i><i class="cur__d"></i></div>
+
+<header class="hd solid" id="hd">
+  <a class="hd__logo" href="index.html"><span>sand</span></a>
+  <nav class="hd__nav" aria-label="メインナビゲーション">
+    <a href="index.html#concept">CONCEPT</a><a href="index.html#craft">CRAFT</a><a href="index.html#media">MEDIA</a>
+    <a href="index.html#salon">SALON</a><a href="index.html#menu">MENU</a><a href="recruit.html">RECRUIT</a>
+  </nav>
+  <div class="hd__act">
+    <a class="btn btn--sm" href="index.html#salon"><span>RESERVE</span></a>
+    <button class="burger" id="burger" aria-label="メニューを開く" aria-expanded="false" aria-controls="drawer"><i></i><i></i><i></i></button>
+  </div>
+</header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer__in">
+    <nav class="drawer__nav">
+      <a href="index.html#concept"><i>01</i><b>Concept</b><em>コンセプト</em></a>
+      <a href="index.html#craft"><i>02</i><b>Craft</b><em>技術</em></a>
+      <a href="index.html#media"><i>03</i><b>Media</b><em>掲載・出演</em></a>
+      <a href="index.html#salon"><i>04</i><b>Salon</b><em>サロン</em></a>
+      <a href="index.html#menu"><i>05</i><b>Menu</b><em>メニュー</em></a>
+      <a href="recruit.html"><i>06</i><b>Recruit</b><em>採用情報</em></a>
+      <a href="contact.html"><i>07</i><b>Contact</b><em>ご予約・お問い合わせ</em></a>
+    </nav>
+    <div class="drawer__ft">
+      <p>13 salons ／ 銀座・表参道・池袋・新宿・横浜・大阪・名古屋</p>
+    </div>
+  </div>
+</div>
+
+<main id="main" class="sub">
+
+  <header class="sub__hd">
+    <nav class="crumb" aria-label="パンくず"><a href="index.html">TOP</a><span>/</span><em>CONTACT</em></nav>
+    <p class="hdr__no">07</p>
+    <h1 class="sub__en">Contact</h1>
+    <p class="sub__ja">ご予約・お問い合わせ</p>
+  </header>
+
+  <!-- 予約は各サロンの予約システムへ -->
+  <section class="sub__sec" aria-labelledby="resv">
+    <div class="wrap">
+      <h2 class="sub__h2 rise" id="resv">ご予約</h2>
+      <p class="sub__p rise">ご予約はサロンごとに承っています。WEB予約は24時間受付、当日のご予約はお電話が確実です。</p>
+      <div class="reserve" id="reserveList"></div>
+      <p class="sub__note rise">※ WEB予約は各サロンの予約ページ（HOT PEPPER Beauty）へ移動します。</p>
+    </div>
+  </section>
+
+  <!-- お問い合わせフォーム -->
+  <section class="sub__sec sub__sec--tint" aria-labelledby="form">
+    <div class="wrap wrap--narrow">
+      <h2 class="sub__h2 rise" id="form">お問い合わせ</h2>
+      <p class="sub__p rise">取材・撮影・商品に関するご相談、企業の方からのお問い合わせはこちらから承ります。<br>ご予約の変更・キャンセルは、お手数ですが直接サロンへご連絡ください。</p>
+
+      <form class="form rise" id="inquiry" novalidate>
+        <div class="form__row">
+          <label for="f-type">お問い合わせ種別<b>必須</b></label>
+          <select id="f-type" name="type" required data-label="お問い合わせ種別">
+            <option value="">選択してください</option>
+            <option>施術・メニューについて</option>
+            <option>取材・撮影のご依頼</option>
+            <option>商品・仕入れについて</option>
+            <option>企業・団体からのご相談</option>
+            <option>その他</option>
+          </select>
+        </div>
+
+        <div class="form__row">
+          <label for="f-name">お名前<b>必須</b></label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required data-label="お名前">
+        </div>
+
+        <div class="form__row">
+          <label for="f-company">会社・団体名</label>
+          <input id="f-company" name="company" type="text" autocomplete="organization">
+        </div>
+
+        <div class="form__row">
+          <label for="f-email">メールアドレス<b>必須</b></label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required data-label="メールアドレス">
+        </div>
+
+        <div class="form__row">
+          <label for="f-tel">電話番号</label>
+          <input id="f-tel" name="tel" type="tel" autocomplete="tel">
+        </div>
+
+        <div class="form__row">
+          <label for="f-salon">対象サロン</label>
+          <select id="f-salon" name="salon"><option value="">指定なし</option></select>
+        </div>
+
+        <div class="form__row">
+          <label for="f-body">お問い合わせ内容<b>必須</b></label>
+          <textarea id="f-body" name="body" rows="7" required data-label="お問い合わせ内容"></textarea>
+        </div>
+
+        <div class="form__check">
+          <input id="f-agree" name="agree" type="checkbox" required data-label="個人情報の取り扱いへの同意">
+          <label for="f-agree">個人情報の取り扱いに同意します</label>
+        </div>
+
+        <p class="fnote" id="formNote" hidden></p>
+
+        <button class="btn btn--solid form__submit" type="submit"><span>送信する</span></button>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="ft">
+  <div class="wrap ft__in">
+    <div>
+      <p class="ft__logo">sand</p>
+      <p class="ft__tag">Short &amp; Bob specialist<br>銀座 / 表参道 / 池袋 / 新宿 / 横浜 / 大阪 / 名古屋</p>
+    </div>
+    <nav class="ft__nav" aria-label="フッターナビゲーション">
+      <a href="index.html#concept">CONCEPT</a><a href="index.html#craft">CRAFT</a>
+      <a href="index.html#media">MEDIA</a><a href="index.html#salon">SALON</a>
+      <a href="index.html#menu">MENU</a><a href="recruit.html">RECRUIT</a>
+      <a href="contact.html">CONTACT</a>
+    </nav>
+  </div>
+  <p class="ft__cr">© <span id="yr"></span> sand All rights reserved.</p>
+</footer>
+
+<span class="prog" aria-hidden="true"><i id="prog"></i></span>
+<script src="assets/js/salons.js"></script>
+<script src="assets/js/page.js"></script>
+</body>
+</html>

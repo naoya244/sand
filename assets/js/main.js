@@ -14,21 +14,9 @@
   gsap.registerPlugin(ScrollTrigger);
 
   /* ---------- データ ---------- */
-  const SALONS = [
-    { n:'sand Ginza',         a:'ginza',      j:'銀座',   z:'〒104-0061', d:'東京都中央区銀座1-8-7 VORT銀座DDI 5F',              img:'ginza.webp' },
-    { n:'sand S Ginza',       a:'ginza',      j:'銀座',   z:'〒104-0061', d:'東京都中央区銀座2-11-5 陽光銀座セントラルビル 3F',    img:'sginza.webp' },
-    { n:'sand Hearts ginza',  a:'ginza',      j:'銀座',   z:'〒104-0061', d:'東京都中央区銀座7-13-2 Tiara Grace 銀座タワー 6F',   img:'hearts.jpg' },
-    { n:'sand omotesando',    a:'omotesando', j:'表参道', z:'〒150-0001', d:'東京都渋谷区神宮前5-20-21 タウンハウス神宮前B号室',  img:'omotesando.webp' },
-    { n:'sand Scene',         a:'omotesando', j:'表参道', z:'〒150-0001', d:'東京都渋谷区神宮前3-6-7 Dear神宮前 2F',             img:'scene.webp' },
-    { n:'sand Ikebukuro',     a:'ikebukuro',  j:'池袋',   z:'〒170-0013', d:'東京都豊島区東池袋1-22-13 近代グループBLD.11号館 5F', img:'ikebukuro.webp' },
-    { n:'sand Ikebukuro 2nd', a:'ikebukuro',  j:'池袋',   z:'〒171-0022', d:'東京都豊島区南池袋2-17-8 ブルーム南池袋 6F',         img:'ikebukuro2.jpg' },
-    { n:'sand Leo',           a:'shinjuku',   j:'新宿',   z:'〒151-0053', d:'東京都渋谷区代々木2-11-19 J-Grace新宿 4F',           img:'leo.jpg' },
-    { n:'sand clear 横浜本店', a:'yokohama',  j:'横浜',   z:'〒220-0005', d:'神奈川県横浜市西区南幸2-11-1 横浜エムエスビル 4F',   img:'clear.jpg' },
-    { n:'sand mieu',          a:'yokohama',   j:'横浜',   z:'〒220-0005', d:'神奈川県横浜市西区南幸2-11-1 横浜エムエスビル 5F',   img:'mieu.jpg' },
-    { n:'sand yena',          a:'yokohama',   j:'横浜',   z:'〒221-0844', d:'神奈川県横浜市神奈川区沢渡3-1 東興ビル 2F-A',        img:'yena.jpg' },
-    { n:'sand Osaka',         a:'osaka',      j:'大阪',   z:'〒530-0015', d:'大阪府大阪市北区中崎西3-1-4 Bonコンドミニアム梅田 1F-A', img:'osaka.webp' },
-    { n:'sand Nagoya',        a:'nagoya',     j:'名古屋', z:'〒450-0002', d:'愛知県名古屋市中村区名駅4-16-33 パシフィックスクエア名駅 7F', img:'nagoya.jpg' }
-  ];
+  /* サロンデータは salons.js に一本化（下層ページと共有） */
+  const SALONS = window.SAND.SALONS;
+  const HP = 'https://beauty.hotpepper.jp/', SL = 'https://sand-hair.com/salon/';
 
   $('#salons').innerHTML = SALONS.map(s => `
     <article class="slnc" data-area="${s.a}">
@@ -38,7 +26,12 @@
       </div>
       <h3 class="slnc__n">${s.n}</h3>
       <p class="slnc__d"><span class="slnc__z">${s.z}</span>${s.d}</p>
-      <a class="slnc__l" href="#contact"><span>RESERVE &amp; DETAIL</span><i>→</i></a>
+      <div class="slnc__act">
+        <a class="slnc__book" href="${HP}${s.hp}" target="_blank" rel="noopener noreferrer">
+          <span>WEB予約</span><i>↗</i>
+        </a>
+        <a class="slnc__more" href="${SL}${s.sl}" target="_blank" rel="noopener noreferrer">店舗詳細</a>
+      </div>
     </article>`).join('');
 
   // MEDIA（掲載誌・出演）
@@ -222,8 +215,8 @@
 
     /* ---- コンセプトの地の色をスクロールで深める ---- */
     if ($('.cpt')) {
-      gsap.fromTo('.cpt', { backgroundColor: '#F1F7F7' }, {
-        backgroundColor: '#DDEDEF', ease: 'none',
+      gsap.fromTo('.cpt', { backgroundColor: '#E9F4F5' }, {
+        backgroundColor: '#AFD8DE', ease: 'none',
         scrollTrigger: { trigger: '.cpt', start: 'top center', end: 'bottom bottom', scrub: .6 }
       });
     }
