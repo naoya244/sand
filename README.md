@@ -29,7 +29,7 @@ assets/
 ## デザイン
 
 - テーマカラー **`#8FC6CD`（ソフトアクア）**。暗い面は深いティール `#1D3F46` / `#0D2025`
-- 和文ディスプレイ Zen Old Mincho ／ 欧文 Cormorant Garamond ／ ラベル Jost
+- 欧文ディスプレイ **Syne** ／ 和文ディスプレイ **M PLUS 2** ／ 和文本文 **Zen Kaku Gothic New** ／ ラベル **Outfit**
 
 ## スクロール演出
 

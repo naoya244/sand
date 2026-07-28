@@ -14,10 +14,11 @@
   --ink:#3C4A4C;   --ink-2:#7C8C8E;
   --hair:rgba(29,63,70,.16); --hair-l:rgba(247,249,249,.20);
   --hair-d:rgba(13,32,37,.20);            /* アクア面に引く罫線 */
-  --f-dp:"Cormorant Garamond","Zen Old Mincho",serif;
-  --f-mc:"Zen Old Mincho",serif;
-  --f-ja:"Zen Kaku Gothic New",sans-serif;
-  --f-ui:"Jost",sans-serif;
+  /* モダン寄りのサンセリフ構成。旧: Cormorant + Zen Old Mincho（古典的）から差し替え */
+  --f-dp:"Syne","M PLUS 2",sans-serif;      /* 欧文ディスプレイ */
+  --f-mc:"M PLUS 2",sans-serif;             /* 和文ディスプレイ */
+  --f-ja:"Zen Kaku Gothic New",sans-serif;  /* 和文本文 */
+  --f-ui:"Outfit",sans-serif;               /* ラベル */
   --pad:clamp(20px,5vw,84px);
   --max:1440px;
   --e:cubic-bezier(.22,1,.36,1);
@@ -138,7 +139,7 @@ body.lock .burger i{background:var(--paper);}
 .drawer.open .drawer__nav a{opacity:1;transform:none;transition-delay:calc(.3s + var(--i,0)*.05s);}
 .drawer__nav a:hover{padding-left:14px;color:var(--aqua);}
 .drawer__nav i{grid-row:span 2;font-family:var(--f-dp);font-size:12px;opacity:.45;}
-.drawer__nav b{font-family:var(--f-dp);font-weight:300;font-size:clamp(28px,6vw,50px);line-height:1.05;}
+.drawer__nav b{font-family:var(--f-dp);font-weight:400;font-size:clamp(28px,6vw,50px);line-height:1.05;}
 .drawer__nav em{grid-column:2;font-size:10.5px;letter-spacing:.24em;opacity:.55;}
 .drawer__ft{display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:end;color:rgba(247,249,249,.55);font-size:11px;letter-spacing:.12em;}
 .drawer__sns{display:flex;gap:22px;font-family:var(--f-ui);letter-spacing:.18em;}
@@ -166,10 +167,14 @@ body.lock .burger i{background:var(--paper);}
 }
 .hero__kick{display:flex;align-items:center;gap:12px;margin-bottom:24px;font-family:var(--f-ui);font-size:10.5px;letter-spacing:.26em;opacity:.9;}
 .hero__kick i{width:44px;height:1px;background:var(--aqua);}
-.hero__ttl{font-family:var(--f-mc);font-weight:500;font-size:clamp(34px,6vw,86px);line-height:1.22;letter-spacing:.02em;text-shadow:0 2px 30px rgba(8,20,24,.4);}
-.hero__ttl .ln{display:block;overflow:hidden;}
-.hero__ttl .ln > span{display:inline-block;white-space:nowrap;}
-.hero__ttl .ch{display:inline-block;opacity:0;transform:translateY(1.05em) rotate(4deg);}
+.hero__ttl{font-family:var(--f-mc);font-weight:700;font-size:clamp(32px,5.4vw,78px);line-height:1.42;letter-spacing:.01em;text-shadow:0 2px 30px rgba(8,20,24,.4);}
+.hero__ttl .ln{display:block;overflow:hidden;padding-bottom:.06em;}
+/* inline-block だとベースライン下にディセンダ分の余白が生まれ、
+   マスク(.ln の overflow:hidden)が文字を切ってしまう。block にして密着させる */
+.hero__ttl .ln > span{display:block;white-space:nowrap;}
+/* vertical-align:top にしないと、各文字(inline-block)がベースライン揃えになり
+   行ボックスの下にディセンダ分の余白が積み増されてマスクが文字を切る */
+.hero__ttl .ch{display:inline-block;vertical-align:top;opacity:0;transform:translateY(1.05em) rotate(4deg);}
 .hero__ttl.go .ch{opacity:1;transform:none;transition:opacity .9s var(--e) var(--cd),transform 1.05s var(--e) var(--cd);}
 .hero__lead{margin-top:22px;font-size:clamp(12.5px,1.2vw,15px);line-height:2.2;opacity:.92;max-width:46em;}
 .hero__cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;}
@@ -184,7 +189,7 @@ body.lock .burger i{background:var(--paper);}
 @keyframes sc{50%{transform:translateX(0)}100%{transform:translateX(100%)}}
 .hero__num{display:flex;gap:clamp(22px,5vw,66px);}
 .hero__num div{text-align:right;}
-.hero__num b{display:block;font-family:var(--f-dp);font-weight:300;font-size:clamp(30px,4vw,54px);line-height:1;}
+.hero__num b{display:block;font-family:var(--f-dp);font-weight:400;font-size:clamp(30px,4vw,54px);line-height:1;}
 .hero__num em{font-family:var(--f-ui);font-size:9px;letter-spacing:.24em;opacity:.7;}
 
 /* =========================================================
@@ -255,7 +260,7 @@ body.lock .burger i{background:var(--paper);}
 .hdr{position:relative;margin-bottom:clamp(38px,5vw,64px);}
 .hdr__no{font-family:var(--f-dp);font-size:12px;letter-spacing:.24em;color:var(--aqua-d);display:block;margin-bottom:4px;}
 /* 1文字ずつ下から立ち上げるので、はみ出しを隠す。ディセンダ分だけ余白を足す */
-.hdr__en{font-family:var(--f-dp);font-weight:300;font-size:clamp(52px,9vw,132px);line-height:.88;color:var(--deep);margin-left:-.05em;overflow:hidden;padding-bottom:.14em;}
+.hdr__en{font-family:var(--f-dp);font-weight:400;font-size:clamp(46px,8vw,112px);line-height:.95;color:var(--deep);margin-left:-.05em;overflow:hidden;padding-bottom:.24em;}
 .hdr__ja{margin-top:12px;font-size:12.5px;letter-spacing:.18em;color:var(--ink-2);}
 .hdr--c{text-align:center;}
 .hdr--c .hdr__en{margin-left:0;}
@@ -349,7 +354,7 @@ body.lock .burger i{background:var(--paper);}
 /* アクア地なので文字は濃ティール側に反転させる */
 .chap__n{font-family:var(--f-dp);font-size:13px;letter-spacing:.22em;color:var(--deep-3);opacity:.7;}
 .chap h3{margin:16px 0 4px;font-family:var(--f-mc);font-weight:500;font-size:clamp(22px,2.6vw,38px);line-height:1.5;letter-spacing:.04em;color:var(--deep-3);}
-.chap em{font-family:var(--f-dp);font-style:italic;font-size:14px;color:rgba(13,32,37,.62);}
+.chap em{font-family:var(--f-ui);font-size:12px;letter-spacing:.14em;color:rgba(13,32,37,.62);}
 .chap p{margin-top:20px;font-size:13.5px;line-height:2.15;color:rgba(13,32,37,.82);}
 .pin__dots{position:absolute;left:var(--pad);bottom:56px;z-index:2;display:flex;gap:12px;}
 .pin__dots li{width:7px;height:7px;border-radius:50%;border:1px solid rgba(13,32,37,.45);transition:background .5s var(--e),transform .5s var(--e),border-color .5s var(--e);}
@@ -372,7 +377,7 @@ body.lock .burger i{background:var(--paper);}
 .awd{background:var(--aqua);color:var(--deep-3);padding-block:clamp(56px,8vw,96px);text-align:center;}
 .awd__l{font-family:var(--f-ui);font-size:10.5px;letter-spacing:.32em;color:rgba(13,32,37,.62);}
 .awd__y{display:flex;justify-content:center;align-items:center;gap:18px;margin:14px 0 10px;}
-.awd__y b{font-family:var(--f-dp);font-weight:300;font-size:clamp(34px,6vw,76px);line-height:1;}
+.awd__y b{font-family:var(--f-dp);font-weight:400;font-size:clamp(34px,6vw,76px);line-height:1;}
 .awd__y i{width:5px;height:5px;border-radius:50%;background:var(--deep-3);opacity:.5;}
 .awd__s{font-size:12px;letter-spacing:.16em;color:rgba(13,32,37,.62);}
 
@@ -382,7 +387,7 @@ body.lock .burger i{background:var(--paper);}
 .hz{position:relative;background:var(--paper-2);}
 .hz__stage{position:relative;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:28px;padding-block:90px;}
 .hz__hd{padding-inline:var(--pad);}
-.hz__hd .hdr__en{font-family:var(--f-dp);font-weight:300;font-size:clamp(46px,7vw,104px);line-height:.9;color:var(--deep);}
+.hz__hd .hdr__en{font-family:var(--f-dp);font-weight:400;font-size:clamp(46px,7vw,104px);line-height:.9;color:var(--deep);}
 .hz__hd .hdr__no{font-family:var(--f-dp);font-size:12px;letter-spacing:.24em;color:var(--aqua-d);}
 .hz__hd .hdr__ja{margin-top:8px;font-size:12px;letter-spacing:.18em;color:var(--ink-2);}
 .hz__track{display:flex;gap:clamp(16px,2vw,30px);padding-inline:var(--pad);width:max-content;will-change:transform;}
@@ -446,7 +451,7 @@ body.lock .burger i{background:var(--paper);}
 .mn__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(28px,3.4vw,54px) clamp(36px,7vw,120px);}
 @media (max-width:760px){.mn__grid{grid-template-columns:1fr;}}
 .mn__t{display:flex;align-items:baseline;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--hair-d);}
-.mn__t i{font-family:var(--f-dp);font-style:normal;font-weight:300;font-size:clamp(26px,3vw,38px);line-height:1;color:var(--deep-3);}
+.mn__t i{font-family:var(--f-dp);font-style:normal;font-weight:400;font-size:clamp(26px,3vw,38px);line-height:1;color:var(--deep-3);}
 .mn__t span{font-size:11px;letter-spacing:.2em;color:rgba(13,32,37,.62);}
 .mn__g li{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:14px 0;border-bottom:1px solid var(--hair-d);font-size:12.5px;color:rgba(13,32,37,.86);}
 .mn__g li b{font-family:var(--f-dp);font-weight:400;font-size:18px;color:var(--deep-3);white-space:nowrap;}
@@ -461,7 +466,7 @@ body.lock .burger i{background:var(--paper);}
 .rec::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(13,32,37,.6),rgba(13,32,37,.86));}
 .rec__in{max-width:840px;z-index:3;}
 .rec .hdr__no{color:var(--aqua);font-family:var(--f-dp);font-size:12px;letter-spacing:.24em;display:block;}
-.rec__en{font-family:var(--f-dp);font-weight:300;font-size:clamp(50px,9vw,140px);line-height:.9;margin:12px 0 24px;}
+.rec__en{font-family:var(--f-dp);font-weight:400;font-size:clamp(46px,8vw,118px);line-height:.96;margin:12px 0 24px;}
 .rec__cp{font-family:var(--f-mc);font-weight:500;font-size:clamp(19px,2.6vw,33px);line-height:1.85;letter-spacing:.04em;}
 .rec__tx{margin:26px auto 0;max-width:640px;font-size:13.5px;line-height:2.3;color:rgba(247,249,249,.76);}
 .rec__cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:40px;}
@@ -472,7 +477,7 @@ body.lock .burger i{background:var(--paper);}
 .cnt{background:var(--paper-2);}
 .cnt__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:clamp(28px,4vw,58px);}
 .cnt__c{display:flex;flex-direction:column;align-items:flex-start;gap:13px;padding-top:24px;border-top:1px solid var(--deep);}
-.cnt__c h3{font-family:var(--f-dp);font-weight:300;font-size:32px;line-height:1;color:var(--deep);}
+.cnt__c h3{font-family:var(--f-dp);font-weight:400;font-size:32px;line-height:1;color:var(--deep);}
 .cnt__c p{font-size:12.5px;line-height:2.05;margin-bottom:6px;}
 .cnt__c .btn{width:100%;max-width:340px;}
 .sns{width:100%;max-width:340px;border-top:1px solid var(--hair);}
@@ -563,7 +568,7 @@ body.lock .burger i{background:var(--paper);}
 .crumb a{color:var(--deep);}
 .crumb a:hover{color:var(--aqua-d);}
 .crumb em{font-style:normal;color:var(--ink-2);}
-.sub__en{font-family:var(--f-dp);font-weight:300;font-size:clamp(52px,10vw,142px);line-height:.88;color:var(--deep);margin-left:-.05em;}
+.sub__en{font-family:var(--f-dp);font-weight:400;font-size:clamp(46px,8.4vw,116px);line-height:.95;color:var(--deep);margin-left:-.05em;}
 .sub__ja{margin-top:12px;font-size:12.5px;letter-spacing:.18em;color:var(--ink-2);}
 .sub__sec{padding-block:clamp(56px,8vw,110px);}
 .sub__sec--tint{background:var(--paper-2);}
