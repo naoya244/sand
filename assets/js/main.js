@@ -137,8 +137,8 @@
     const chaps  = $$('.chap');
     const dots   = $$('.pin__dots li');
 
-    gsap.set(pshots, { opacity: 0 });  gsap.set(pshots[0], { opacity: 1 });
-    gsap.set(chaps,  { opacity: 0, y: 30 }); gsap.set(chaps[0], { opacity: 1, y: 0 });
+    const ghost = $('.pin__ghost');
+    gsap.set(chaps, { opacity: 0, y: 30 }); gsap.set(chaps[0], { opacity: 1, y: 0 });
 
     const pinTl = gsap.timeline({
       scrollTrigger: {
@@ -146,18 +146,20 @@
         onUpdate: (self) => {
           const i = Math.min(Math.floor(self.progress * chaps.length), chaps.length - 1);
           dots.forEach((d, n) => d.classList.toggle('is-on', n === i));
+          if (ghost) ghost.textContent = String(i + 1).padStart(2, '0');
         }
       }
     });
-    // 写真は担当区間のあいだ、寄りながら左右にゆっくり流れ続ける
+    // 写真は寄り続け、章が変わるたび下から拭き上がって差し替わる
     pshots.forEach((s, i) => {
       const img = s.querySelector('img');
       pinTl.fromTo(img,
-        { scale: 1.24, xPercent: i % 2 ? 2.5 : -2.5 },
-        { scale: 1.02, xPercent: i % 2 ? -2.5 : 2.5, ease: 'none', duration: 1 }, i);
+        { scale: 1.26, yPercent: i % 2 ? -3 : 3 },
+        { scale: 1.02, yPercent: i % 2 ? 3 : -3, ease: 'none', duration: 1 }, i);
       if (i > 0) {
-        pinTl.to(pshots[i - 1], { opacity: 0, ease: 'none', duration: .45 }, i - .22)
-             .to(s,             { opacity: 1, ease: 'none', duration: .45 }, i - .22);
+        pinTl.fromTo(s,
+          { clipPath: 'inset(100% 0% 0% 0%)' },
+          { clipPath: 'inset(0% 0% 0% 0%)', ease: 'power2.inOut', duration: .7 }, i - .35);
       }
     });
     // 文章は上へ抜けながら、次が下から差し替わる
@@ -180,12 +182,18 @@
       }
     });
 
-    /* ---- 文字の中の写真を、スクロールでゆっくり流す ---- */
-    if ($('.msk__t')) {
-      gsap.fromTo('.msk__t',
-        { backgroundPosition: '50% 8%' },
-        { backgroundPosition: '50% 78%', ease: 'none',
-          scrollTrigger: { trigger: '.msk', start: 'top bottom', end: 'bottom top', scrub: .5 } });
+    /* ---- 文字の中の写真：流しながら3枚を入れ替える ---- */
+    const mskLayers = $$('.msk__t');
+    if (mskLayers.length) {
+      const mskTl = gsap.timeline({
+        scrollTrigger: { trigger: '.msk', start: 'top bottom', end: 'bottom top', scrub: .5 }
+      });
+      mskTl.fromTo(mskLayers,
+        { backgroundPosition: '50% 6%' },
+        { backgroundPosition: '50% 82%', ease: 'none', duration: 3 }, 0);
+      // 中身だけが切り替わる。文字の形は動かないので視線が飛ばない
+      mskTl.to(mskLayers[1], { opacity: 1, ease: 'none', duration: .5 }, .9)
+           .to(mskLayers[2], { opacity: 1, ease: 'none', duration: .5 }, 1.9);
     }
 
     /* ---- サロン : ばらけた状態から所定位置へ組み上がる ---- */

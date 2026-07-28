@@ -214,22 +214,38 @@ body.lock .burger i{background:var(--paper);}
    文字の中で写真が動く
    ========================================================= */
 .msk{background:var(--paper);padding-block:clamp(90px,14vw,190px);text-align:center;overflow:hidden;}
+.msk__stack{position:relative;}
 .msk__t{
   font-family:var(--f-mc);font-weight:600;
   font-size:clamp(46px,12.5vw,190px);line-height:1.12;letter-spacing:.01em;
   color:var(--deep);                       /* 非対応ブラウザ向けの下地 */
 }
+.msk__t--2,.msk__t--3{position:absolute;inset:0;}
 @supports ((-webkit-background-clip:text) or (background-clip:text)){
   .msk__t{
-    background-image:url("../img/hero/hero03.jpg");
     background-size:120% auto;background-position:50% 30%;background-repeat:no-repeat;
     -webkit-background-clip:text;background-clip:text;
     color:transparent;-webkit-text-fill-color:transparent;
-    will-change:background-position;
+    will-change:background-position,opacity;
   }
+  /* スクロールにつれて文字の中身が3枚入れ替わる */
+  .msk__t--1{background-image:url("../img/hero/hero03.jpg");}
+  .msk__t--2{background-image:url("../img/hero/hero01.jpg");opacity:0;}
+  .msk__t--3{background-image:url("../img/hero/hero02.jpg");opacity:0;}
 }
 .msk__s{margin-top:28px;font-family:var(--f-ui);font-size:11px;letter-spacing:.3em;color:var(--ink-2);}
 @media (max-width:720px){.msk__t{font-size:clamp(38px,13vw,80px);}}
+
+/* Recruit の見出しも写真で抜く */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .rec__mask{
+    background-image:url("../img/misc/recruit_bg.jpg");
+    background-size:cover;background-position:50% 40%;
+    -webkit-background-clip:text;background-clip:text;
+    color:transparent;-webkit-text-fill-color:transparent;
+    display:inline-block;
+  }
+}
 
 /* =========================================================
    共通
@@ -301,31 +317,51 @@ body.lock .burger i{background:var(--paper);}
 /* =========================================================
    BEAT 3 — Pinned scrollytelling
    ========================================================= */
-.pin{height:440vh;position:relative;background:var(--deep-2);}
-.pin__stage{position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;}
-.pin__media{position:absolute;inset:0;z-index:0;}
-.pshot{position:absolute;inset:0;will-change:opacity;}
+/* 左＝無地の文字面、右＝写真。写真の上に本文を置かない構成にして
+   コントラスト不足を構造から潰す */
+.pin{height:440vh;position:relative;background:var(--deep-3);}
+.pin__stage{
+  position:sticky;top:0;height:100svh;overflow:hidden;isolation:isolate;
+  display:grid;grid-template-columns:46% 54%;
+}
+.pin__left{
+  position:relative;overflow:hidden;background:var(--deep-3);color:var(--paper);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:120px clamp(24px,4vw,72px) 90px var(--pad);
+}
+.pin__ghost{
+  position:absolute;right:-.04em;bottom:-.14em;z-index:0;
+  font-family:var(--f-dp);font-size:clamp(180px,26vw,400px);line-height:.8;
+  color:var(--aqua);opacity:.10;pointer-events:none;
+}
+.pin__right{position:relative;overflow:hidden;background:var(--deep-2);}
+.pshot{position:absolute;inset:0;will-change:clip-path;}
+.pshot:not(:first-child){clip-path:inset(100% 0 0 0);}
 .pshot img{width:100%;height:100%;object-fit:cover;will-change:transform;}
-.pin__veil{position:absolute;inset:0;z-index:1;background:linear-gradient(100deg,rgba(13,32,37,.88) 0%,rgba(13,32,37,.62) 44%,rgba(13,32,37,.12) 100%);}
-.pin__ui{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:center;padding:120px var(--pad) 90px;color:var(--paper);}
-.pin__hd{margin-bottom:clamp(24px,4vh,52px);}
+.pin__hd{position:relative;z-index:2;margin-bottom:clamp(24px,4vh,52px);}
 .pin__hd .hdr__en{color:var(--paper);}
 .pin__hd .hdr__no{color:var(--aqua);}
-.pin__chapters{position:relative;max-width:min(560px,60%);min-height:16em;}
+.pin__chapters{position:relative;z-index:2;max-width:34em;min-height:15em;}
 .chap{position:absolute;inset:0;opacity:0;will-change:opacity,transform;}
 .chap:first-child{opacity:1;}   /* JSが動かなくても最低1章は読める */
 .chap__n{font-family:var(--f-dp);font-size:13px;letter-spacing:.22em;color:var(--aqua);}
-.chap h3{margin:16px 0 4px;font-family:var(--f-mc);font-weight:500;font-size:clamp(22px,2.6vw,36px);line-height:1.5;letter-spacing:.04em;}
-.chap em{font-family:var(--f-dp);font-style:italic;font-size:14px;color:rgba(247,249,249,.55);}
-.chap p{margin-top:20px;font-size:13.5px;line-height:2.15;color:rgba(247,249,249,.8);}
-.pin__dots{position:absolute;right:var(--pad);top:50%;translate:0 -50%;display:grid;gap:14px;}
+.chap h3{margin:16px 0 4px;font-family:var(--f-mc);font-weight:500;font-size:clamp(22px,2.6vw,38px);line-height:1.5;letter-spacing:.04em;}
+.chap em{font-family:var(--f-dp);font-style:italic;font-size:14px;color:rgba(247,249,249,.6);}
+.chap p{margin-top:20px;font-size:13.5px;line-height:2.15;color:rgba(247,249,249,.86);}
+.pin__dots{position:absolute;left:var(--pad);bottom:56px;z-index:2;display:flex;gap:12px;}
 .pin__dots li{width:7px;height:7px;border-radius:50%;border:1px solid rgba(247,249,249,.5);transition:background .5s var(--e),transform .5s var(--e),border-color .5s var(--e);}
 .pin__dots li.is-on{background:var(--aqua);border-color:var(--aqua);transform:scale(1.5);}
 @media (max-width:820px){
   .pin{height:420vh;}
-  .pin__chapters{max-width:100%;}
-  .pin__veil{background:linear-gradient(180deg,rgba(13,32,37,.55) 0%,rgba(13,32,37,.88) 55%);}
-  .pin__dots{right:14px;}
+  /* 縦並び。写真が上、文字は無地の上 */
+  .pin__stage{grid-template-columns:1fr;grid-template-rows:40% 60%;}
+  .pin__right{order:-1;}
+  .pin__left{padding:34px var(--pad) 74px;justify-content:flex-start;}
+  .pin__chapters{max-width:100%;min-height:17em;}
+  .pin__hd{margin-bottom:20px;}
+  .pin__hd .hdr__en{font-size:clamp(40px,13vw,72px);}
+  .pin__ghost{font-size:clamp(140px,42vw,240px);bottom:-.22em;}
+  .pin__dots{bottom:26px;}
   .rvl{height:260vh;}
 }
 
@@ -483,12 +519,14 @@ body.lock .burger i{background:var(--paper);}
   .rvl__veil{opacity:1;}
   .rvl__cap{opacity:1;}
   .pin{height:auto;}
-  .pin__stage{position:relative;height:auto;}
-  .pin__ui{position:relative;inset:auto;padding-block:100px;}
-  .pin__chapters{min-height:0;display:grid;gap:44px;}
+  .pin__stage{position:relative;height:auto;grid-template-columns:1fr;}
+  .pin__left{padding-block:90px;}
+  .pin__right{min-height:60svh;}
+  .pin__chapters{min-height:0;display:grid;gap:44px;position:static;}
   .chap{position:relative;inset:auto;opacity:1;}
   .pshot:not(:first-child){display:none;}
   .pin__dots{display:none;}
+  .msk__t--2,.msk__t--3{display:none;}
   .hz__stage{height:auto;}
   .hz__track{width:auto;overflow-x:auto;}
   .cur{display:none;}

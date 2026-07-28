@@ -136,8 +136,12 @@
 <!-- ============================================================
      文字の中で写真が動く（背景クリップ）
      ============================================================ -->
-<section class="msk" aria-label="似合う、を削り出す。">
-  <h2 class="msk__t" aria-hidden="true">似合う、を<br>削り出す。</h2>
+<section class="msk">
+  <div class="msk__stack">
+    <h2 class="msk__t msk__t--1">似合う、を<br>削り出す。</h2>
+    <p class="msk__t msk__t--2" aria-hidden="true">似合う、を<br>削り出す。</p>
+    <p class="msk__t msk__t--3" aria-hidden="true">似合う、を<br>削り出す。</p>
+  </div>
   <p class="msk__s">Cut for your life, not for the season.</p>
 </section>
 
@@ -160,15 +164,9 @@
      ============================================================ -->
 <section class="pin" id="craft" aria-label="sandの技術">
   <div class="pin__stage">
-    <div class="pin__media" aria-hidden="true">
-      <figure class="pshot is-on"><img src="assets/img/salon/ginza.webp" alt="" loading="lazy"></figure>
-      <figure class="pshot"><img src="assets/img/salon/clear.jpg" alt="" loading="lazy"></figure>
-      <figure class="pshot"><img src="assets/img/salon/hearts.jpg" alt="" loading="lazy"></figure>
-      <figure class="pshot"><img src="assets/img/salon/nagoya.jpg" alt="" loading="lazy"></figure>
-    </div>
-    <div class="pin__veil" aria-hidden="true"></div>
-
-    <div class="pin__ui">
+    <!-- 左は無地。写真の上に文字を置かないので必ず読める -->
+    <div class="pin__left">
+      <span class="pin__ghost" aria-hidden="true">01</span>
       <header class="pin__hd">
         <span class="hdr__no">02</span>
         <h2 class="hdr__en">Craft</h2>
@@ -186,6 +184,14 @@
       </div>
 
       <ol class="pin__dots" aria-hidden="true"><li class="is-on"></li><li></li><li></li><li></li></ol>
+    </div>
+
+    <!-- 右は写真だけ。章が変わるたび下から拭き上がって差し替わる -->
+    <div class="pin__right" aria-hidden="true">
+      <figure class="pshot"><img src="assets/img/salon/ginza.webp" alt="" loading="lazy"></figure>
+      <figure class="pshot"><img src="assets/img/salon/clear.jpg" alt="" loading="lazy"></figure>
+      <figure class="pshot"><img src="assets/img/salon/hearts.jpg" alt="" loading="lazy"></figure>
+      <figure class="pshot"><img src="assets/img/salon/nagoya.jpg" alt="" loading="lazy"></figure>
     </div>
   </div>
 </section>
@@ -273,7 +279,7 @@
   <div class="rec__bg" aria-hidden="true"><img src="assets/img/misc/recruit_bg.jpg" alt="" loading="lazy" data-plx="0.16"></div>
   <div class="wrap rec__in">
     <span class="hdr__no rise">06</span>
-    <h2 class="rec__en rise" style="--d:.06s">Recruit</h2>
+    <h2 class="rec__en rise" style="--d:.06s"><span class="rec__mask">Recruit</span></h2>
     <p class="rec__cp rise" style="--d:.12s">「sandに入社してよかった」と、<br>思い続けられる美容室でありたい。</p>
     <p class="rec__tx rise" style="--d:.18s">技術を教わる場所ではなく、技術を伸ばし続ける場所へ。スタイリストデビューまでの道筋も、その先のキャリアも、一緒に設計します。まずは気軽に、サロン見学から。</p>
     <div class="rec__cta rise" style="--d:.24s">
